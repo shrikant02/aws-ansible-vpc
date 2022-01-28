@@ -95,7 +95,7 @@
         state: "{{state}}"
         resource_tags:
           Name: igw
-      regsiter: igw_out
+      register: igw_out
 
     - name: Set route table for public subnet
       ec2_vpc_route_table:
