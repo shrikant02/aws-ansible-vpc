@@ -94,5 +94,5 @@
         region: "{{region}}"
         state: "{{state}}"
         resource_tags:
-          Name: internet-gw
+          Name: igw
       regsiter: igw_out
