@@ -32,13 +32,13 @@
       register: pubsub1_out
 
     - name: Create Public Subnet 2 in zone3
-      ec2_vpc_subnet:
+      ec2_vpc_subnet:  # module
         vpc_id: "{{vpcout.vpc.id}}"
         region: "{{region}}"
         az: "{{zone2}}"
         state: "{{state}}"
         cidr: "{{PubSub2Cidr}}"
-        map_public: yes
+        map_public: yes   # ec2 instances initialized in this subnet will get the public ip 
         resource_tags:
           Name: pubsub2
       register: pubsub2_out
@@ -96,3 +96,19 @@
         resource_tags:
           Name: igw
       regsiter: igw_out
+
+    - name: Set route table for public subnet
+      ec2_vpc_route_table:
+        vpc_id: "{{vpcout.vpc.id}}"
+        region: "{{region}}"
+        tags:
+          Name: public-rt
+        subnets:
+          - "{{ pubsub1_out.subnet.id }}"  
+          - "{{ pubsub2_out.subnet.id }}"
+          - "{{ pubsub3_out.subnet.id }}"
+        routes:
+          - dest: 0.0.0.0/0
+            gateway_id: "{{ igw_out.gateway_id }}"
+      register: public-rt_out
+
